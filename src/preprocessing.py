@@ -1,37 +1,118 @@
+
+import os
 import re
 import nltk
-nltk.download("wordnet", quiet=True)
-nltk.download("omw-1.4", quiet=True)
+
+
+# ---------------------------------------------------------
+# NLTK DATA CONFIGURATION
+# ---------------------------------------------------------
+
+# Vercel serverless functions have a writable /tmp directory.
+# Locally, this directory also works.
+NLTK_DATA_DIR = os.path.join(
+    os.environ.get("TMPDIR", "/tmp"),
+    "nltk_data"
+)
+
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+
+# Tell NLTK where to find downloaded resources.
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.insert(0, NLTK_DATA_DIR)
+
+
+# Resource paths used by nltk.data.find() and their package names.
+NLTK_RESOURCES = [
+    ("tokenizers/punkt", "punkt"),
+    ("tokenizers/punkt_tab", "punkt_tab"),
+    ("corpora/stopwords", "stopwords"),
+    ("corpora/wordnet", "wordnet"),
+    ("corpora/omw-1.4", "omw-1.4"),
+    (
+        "taggers/averaged_perceptron_tagger",
+        "averaged_perceptron_tagger",
+    ),
+    (
+        "taggers/averaged_perceptron_tagger_eng",
+        "averaged_perceptron_tagger_eng",
+    ),
+]
+
+
+def download_nltk_resources():
+    """
+    Ensure the required NLTK resources exist.
+
+    Downloads missing resources to NLTK_DATA_DIR and verifies
+    that NLTK can find them. Raises a descriptive error if a
+    resource cannot be installed or located.
+    """
+    for resource_path, resource_name in NLTK_RESOURCES:
+        try:
+            nltk.data.find(resource_path)
+            continue
+
+        except LookupError:
+            pass
+
+        print(
+            f"NLTK resource '{resource_name}' is missing. "
+            f"Downloading to {NLTK_DATA_DIR}..."
+        )
+
+        try:
+            success = nltk.download(
+                resource_name,
+                download_dir=NLTK_DATA_DIR,
+                quiet=True,
+            )
+
+            if not success:
+                raise RuntimeError(
+                    "nltk.download() returned False"
+                )
+
+        except Exception as error:
+            raise RuntimeError(
+                f"Failed to download NLTK resource "
+                f"'{resource_name}'. Check network access "
+                f"and deployment logs. Details: {error}"
+            ) from error
+
+        # Verify the resource after downloading.
+        try:
+            nltk.data.find(resource_path)
+
+        except LookupError as error:
+            raise LookupError(
+                f"NLTK resource '{resource_name}' was "
+                f"downloaded but cannot be found. "
+                f"Expected path: '{resource_path}'. "
+                f"NLTK search paths: {nltk.data.path}"
+            ) from error
+
+        print(f"NLTK resource '{resource_name}' is ready.")
+
+
+# Initialize required resources before using preprocessing.
+download_nltk_resources()
+
+
+# ---------------------------------------------------------
+# LEMMATIZER
+# ---------------------------------------------------------
+
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-
-def download_nltk_resources():
-    resources = [
-        ("tokenizers/punkt", "punkt"),
-        ("tokenizers/punkt_tab", "punkt_tab"),
-        ("corpora/stopwords", "stopwords"),
-        ("corpora/wordnet", "wordnet"),
-        ("corpora/omw-1.4", "omw-1.4"),
-        ("taggers/averaged_perceptron_tagger", "averaged_perceptron_tagger"),
-        (
-            "taggers/averaged_perceptron_tagger_eng",
-            "averaged_perceptron_tagger_eng",
-        ),
-    ]
-
-    for resource_path, resource_name in resources:
-        try:
-            nltk.data.find(resource_path)
-        except LookupError:
-            nltk.download(resource_name)
-
-
-download_nltk_resources()
-
 lemmatizer = WordNetLemmatizer()
 
+
+# ---------------------------------------------------------
+# TEXT CLEANING
+# ---------------------------------------------------------
 
 def clean_text(text):
     if not isinstance(text, str):
@@ -58,6 +139,10 @@ def tokenize_text(text):
     return word_tokenize(text)
 
 
+# ---------------------------------------------------------
+# STOPWORD REMOVAL
+# ---------------------------------------------------------
+
 def remove_stopwords(tokens):
     stop_words = set(stopwords.words("english"))
 
@@ -67,6 +152,10 @@ def remove_stopwords(tokens):
         if token.lower() not in stop_words
     ]
 
+
+# ---------------------------------------------------------
+# LEMMATIZATION
+# ---------------------------------------------------------
 
 def lemmatize_tokens(tokens):
     return [
@@ -123,10 +212,14 @@ def lemmatize_tokens_with_pos(tagged_tokens):
     return result
 
 
+# ---------------------------------------------------------
+# GENERAL PREPROCESSING
+# ---------------------------------------------------------
+
 def preprocess_text(
     text,
     remove_stop_words=True,
-    apply_lemmatization=True
+    apply_lemmatization=True,
 ):
     text = clean_text(text)
     tokens = tokenize_text(text)
@@ -139,6 +232,10 @@ def preprocess_text(
 
     return tokens
 
+
+# ---------------------------------------------------------
+# TARGET WORD AND CONTEXT WINDOW
+# ---------------------------------------------------------
 
 def find_target_index(tokens, target_word):
     if not tokens or not target_word:
@@ -156,7 +253,7 @@ def find_target_index(tokens, target_word):
 def get_context_window(
     tokens,
     target_word,
-    window_size=7
+    window_size=7,
 ):
     if not tokens or not target_word:
         return []
@@ -169,12 +266,10 @@ def get_context_window(
     start = max(0, target_index - window_size)
     end = min(len(tokens), target_index + window_size + 1)
 
-    context = (
+    return (
         tokens[start:target_index]
         + tokens[target_index + 1:end]
     )
-
-    return context
 
 
 def prepare_context(
@@ -182,7 +277,7 @@ def prepare_context(
     target_word,
     window_size=7,
     remove_stop_words=True,
-    apply_lemmatization=True
+    apply_lemmatization=True,
 ):
     if not sentence or not target_word:
         return []
@@ -212,18 +307,24 @@ def prepare_context(
     return context_tokens
 
 
+# ---------------------------------------------------------
+# POS-AWARE CONTEXT PREPARATION
+# ---------------------------------------------------------
+
 def prepare_context_with_pos(
     sentence,
     target_word,
     window_size=7,
-    remove_stop_words=True
+    remove_stop_words=True,
 ):
+    empty_result = {
+        "tokens": [],
+        "tagged_tokens": [],
+        "target_pos": None,
+    }
+
     if not sentence or not target_word:
-        return {
-            "tokens": [],
-            "tagged_tokens": [],
-            "target_pos": None
-        }
+        return empty_result
 
     cleaned_sentence = clean_text(sentence)
     tokens = tokenize_text(cleaned_sentence)
@@ -231,11 +332,7 @@ def prepare_context_with_pos(
     target_index = find_target_index(tokens, target_word)
 
     if target_index == -1:
-        return {
-            "tokens": [],
-            "tagged_tokens": [],
-            "target_pos": None
-        }
+        return empty_result
 
     tagged_sentence = pos_tag_tokens(tokens)
 
@@ -266,9 +363,13 @@ def prepare_context_with_pos(
     return {
         "tokens": processed_tokens,
         "tagged_tokens": context_tagged,
-        "target_pos": target_pos
+        "target_pos": target_pos,
     }
 
+
+# ---------------------------------------------------------
+# TOKEN NORMALIZATION
+# ---------------------------------------------------------
 
 def normalize_tokens(tokens):
     if not tokens:
@@ -290,6 +391,10 @@ def normalize_tokens(tokens):
     return normalized
 
 
+# ---------------------------------------------------------
+# WORDNET SIGNATURE PREPROCESSING
+# ---------------------------------------------------------
+
 def preprocess_signature(signature):
     if not isinstance(signature, str):
         return []
@@ -297,7 +402,7 @@ def preprocess_signature(signature):
     tokens = preprocess_text(
         signature,
         remove_stop_words=True,
-        apply_lemmatization=True
+        apply_lemmatization=True,
     )
 
     return normalize_tokens(tokens)
@@ -305,7 +410,7 @@ def preprocess_signature(signature):
 
 def preprocess_signature_with_pos(
     signature,
-    pos=None
+    pos=None,
 ):
     if not isinstance(signature, str):
         return []
