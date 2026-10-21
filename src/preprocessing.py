@@ -1,6 +1,7 @@
 import re
 import nltk
-
+nltk.download("wordnet", quiet=True)
+nltk.download("omw-1.4", quiet=True)
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
