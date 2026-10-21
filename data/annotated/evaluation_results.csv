@@ -1,0 +1,99 @@
+sentence,target_word,gold_synset,custom_prediction,custom_score,custom_overlap,custom_correct,nltk_prediction,nltk_correct
+He went to the bank to deposit his money.,bank,bank.n.01,depository_financial_institution.n.01,2.0,"deposit, money",False,depository_financial_institution.n.01,False
+The fisherman sat quietly on the bank of the river.,bank,bank.n.01,bank.n.01,2.0,river,True,bank.n.01,True
+They walked along the bank of the river.,bank,bank.n.01,bank.n.01,2.0,river,True,bank.n.01,True
+She opened a savings account at the bank.,bank,bank.n.01,savings_bank.n.02,0.5,saving,False,bank.v.03,False
+The bank approved his loan application.,bank,bank.n.01,bank.n.01,0.0,,True,bank.n.01,True
+The bat flew out of the dark cave at night.,bat,bat.n.02,bat.n.01,0.0,,False,bat.v.03,False
+We saw a bat hanging from the ceiling.,bat,bat.n.02,bat.n.01,0.0,,False,bat.v.01,False
+A small bat flew across the room.,bat,bat.n.02,squash_racket.n.01,1.0,small,False,squash_racket.n.01,False
+The player picked up the bat and walked toward the field.,bat,bat.n.01,bat.n.01,0.0,,True,bat.n.01,True
+He swung the bat and hit the ball.,bat,bat.n.01,bat.n.02,3.0,hit,False,bat.n.01,True
+She turned on the light because the room was dark.,light,light.n.01,light.n.07,2.0,dark,False,luminosity.n.01,False
+The light from the lamp filled the room.,light,light.n.01,light.n.01,0.0,,True,luminosity.n.01,False
+The bright light came through the window.,light,light.n.01,light.n.01,2.0,window,True,luminosity.n.01,False
+"This suitcase is very light, so I can carry it easily.",light,light.a.01,light.s.14,1.0,carry,False,light.n.01,False
+The box is light enough for a child to lift.,light,light.a.01,light.a.01,0.0,,True,inner_light.n.01,False
+He used a match to start the fire.,match,match.n.02,match.n.01,0.0,,False,match.n.05,False
+She struck a match to light the candle.,match,match.n.02,match.n.01,2.0,light,False,match.n.05,False
+The football match started at seven in the evening.,match,match.n.01,match.n.01,0.0,,True,match.n.05,False
+Our team won the match yesterday.,match,match.n.01,match.n.02,1.0,team,False,match.n.05,False
+The final match attracted thousands of fans.,match,match.n.01,match.n.01,0.0,,True,match.n.05,False
+The workers used a crane to lift the heavy machine.,crane,crane.n.04,crane.n.04,2.0,"heavy, lift",True,grus.n.01,False
+The crane lifted the steel beam high into the air.,crane,crane.n.04,crane.n.04,1.0,lift,True,grus.n.01,False
+The construction crane moved the container.,crane,crane.n.04,crane.n.04,1.0,move,True,grus.n.01,False
+We saw a crane standing near the lake.,crane,crane.n.01,grus.n.01,1.0,near,False,grus.n.01,False
+The crane spread its wings and flew away.,crane,crane.n.01,crane.n.01,0.0,,True,crane.n.05,False
+The dog began to bark loudly at the stranger.,bark,bark.v.01,bark.v.04,4.0,"dog, stranger",False,bark.n.02,False
+The dog continued to bark throughout the night.,bark,bark.v.01,bark.v.04,2.0,dog,False,bark.n.02,False
+The puppy started to bark when the door opened.,bark,bark.v.01,bark.v.01,0.0,,True,bark.n.02,False
+The tree has rough bark on its trunk.,bark,bark.n.01,bark.n.01,1.0,tree,True,bark.v.03,False
+The bark of the old tree was very thick.,bark,bark.n.01,bark.n.01,1.0,tree,True,bark.v.03,False
+The factory is a large chemical plant.,plant,plant.n.01,plant.n.01,2.0,large,True,plant.n.02,False
+The workers arrived at the manufacturing plant early.,plant,plant.n.01,plant.n.01,0.0,,True,plant.n.02,False
+The new plant produces electronic components.,plant,plant.n.01,plant.n.01,0.0,,True,plant.n.02,False
+The plant needs water and sunlight to grow.,plant,plant.n.02,plant.n.01,0.0,,False,plant.n.03,False
+The green plant grew beside the window.,plant,plant.n.02,plant.n.01,0.0,,False,plant.n.02,True
+She planted a small plant in the garden.,plant,plant.n.02,plant.n.01,2.5,plant,False,plant.n.02,True
+He picked up a rock from the ground.,rock,rock.n.01,rock.n.01,0.0,,True,rock.n.02,False
+The children threw a rock into the river.,rock,rock.n.01,rock.n.01,0.0,,True,rock_'n'_roll.n.01,False
+A large rock blocked the road.,rock,rock.n.01,rock.n.01,0.0,,True,rock_'n'_roll.n.01,False
+The band played rock music at the concert.,rock,rock.n.02,rock_'n'_roll.n.01,1.5,music,False,rock_'n'_roll.n.01,False
+She likes listening to rock music.,rock,rock.n.02,rock.v.01,0.0,,False,rock.n.04,False
+The radio station played classic rock all evening.,rock,rock.n.02,rock.n.01,0.0,,False,rock.n.02,True
+The spring in the machine needs to be replaced.,spring,spring.n.03,spring.n.01,0.0,,False,give.n.01,False
+The metal spring returned to its original shape.,spring,spring.n.03,spring.n.02,3.0,"metal, return, shape",False,spring.n.02,False
+The mechanic replaced the broken spring.,spring,spring.n.03,spring.n.02,2.0,broken,False,spring.n.01,False
+Spring brings warm weather and flowers.,spring,spring.n.01,spring.n.01,0.0,,True,give.n.01,False
+The flowers bloom during spring.,spring,spring.n.01,spring.n.01,0.0,,True,spring.n.01,True
+Many birds return during spring.,spring,spring.n.01,spring.n.02,1.0,return,False,bounce.v.01,False
+He looked at his watch before leaving the house.,watch,watch.n.01,watch.n.01,0.0,,True,watch.n.04,False
+My watch stopped working this morning.,watch,watch.n.01,watch.n.01,0.0,,True,lookout.n.01,False
+The old watch was given to him by his grandfather.,watch,watch.n.01,watch.n.01,0.0,,True,lookout.n.01,False
+They will watch the movie tonight.,watch,watch.v.01,watch.v.03,2.0,movie,False,watch.n.04,False
+She likes to watch birds from her window.,watch,watch.v.01,watch.v.01,0.0,,True,lookout.n.01,False
+Please watch the children while I cook dinner.,watch,watch.v.01,watch.v.02,2.0,please,False,watch.n.04,False
+The farmer stood in the field with a large hoe.,hoe,hoe.n.01,hoe.n.01,0.0,,True,hoe.v.01,False
+She used a hoe to remove weeds from the garden.,hoe,hoe.n.01,hoe.n.01,0.0,,True,hoe.n.01,True
+He will hoe the garden before planting seeds.,hoe,hoe.v.01,hoe.v.01,0.0,,True,hoe.v.01,True
+The gardener used the tool to hoe the soil.,hoe,hoe.v.01,hoe.v.01,0.0,,True,hoe.n.01,False
+The player stood near the goal during the game.,goal,goal.n.01,goal.n.03,2.0,"game, player",False,goal.n.03,False
+The team scored a goal in the final minute.,goal,goal.n.01,goal.n.04,2.0,minute,False,goal.n.03,False
+The newspaper was delivered early in the morning.,paper,paper.n.01,paper.n.01,0.0,,True,newspaper.n.03,False
+She wrote her answer on a sheet of paper.,paper,paper.n.01,newspaper.n.01,1.0,sheet,False,paper.n.01,True
+The professor published a paper on artificial intelligence.,paper,composition.n.08,paper.n.01,0.0,,False,newspaper.n.01,False
+The students read a research paper for the assignment.,paper,composition.n.08,newspaper.n.01,2.0,read,False,paper.n.04,False
+The teacher asked the students to write a note.,note,note.n.01,note.n.01,0.0,,True,note.n.03,False
+Please note the important information on this page.,note,note.v.01,note.v.01,0.0,,True,note.n.03,False
+She played a high note on the piano.,note,note.n.03,eminence.n.01,1.0,high,False,note.n.03,True
+He wrote a short note to his friend.,note,note.n.01,note.n.07,2.0,short,False,note.n.02,False
+The doctor examined the patient's arm.,arm,arm.n.01,arm.n.01,0.0,,True,sleeve.n.01,False
+The robot has a mechanical arm.,arm,arm.n.01,arm.n.01,0.0,,True,sleeve.n.01,False
+The company has an arm that handles international sales.,arm,arm.n.02,arm.n.01,0.0,,False,arm.n.04,False
+The organization created an overseas arm for its operations.,arm,arm.n.02,branch.n.01,1.0,organization,False,sleeve.n.01,False
+The students gathered around the table.,table,table.n.01,table.n.01,0.0,,True,table.n.05,False
+The data is presented in the following table.,table,table.n.02,table.n.01,0.0,,False,table.n.01,False
+They placed the books on the wooden table.,table,table.n.01,table.n.01,0.0,,True,table.n.03,False
+The researcher created a table of experimental results.,table,table.n.02,table.n.01,0.0,,False,table.n.05,False
+The children played on the field after school.,field,field.n.01,field.n.01,0.0,,True,field.n.05,False
+The scientist works in the field of robotics.,field,field.n.05,field.n.03,3.0,work,False,field.n.12,False
+The farmer walked across the field.,field,field.n.01,sphere.n.01,1.0,walk,False,field.n.05,False
+She is an expert in the field of electronics.,field,field.n.05,field.n.01,0.0,,False,field.n.12,False
+The athlete ran around the track twice.,track,path.n.04,racetrack.n.01,1.0,run,False,track.n.11,False
+The detective tried to track the suspect.,track,track.v.01,track.v.01,0.0,,True,track.n.11,False
+The train runs on a narrow track.,track,path.n.04,racetrack.n.01,1.0,run,False,track.n.11,False
+The software can track network traffic.,track,track.v.01,track.v.01,0.0,,True,track.n.09,False
+The children played with a ball in the park.,ball,ball.n.01,ball.n.01,0.0,,True,ball.n.12,False
+The politician attended the charity ball.,ball,ball.n.04,ball.n.01,0.0,,False,ball.n.04,True
+He threw the ball toward his friend.,ball,ball.n.01,ball.n.01,0.0,,True,ball.n.04,False
+They dressed formally for the evening ball.,ball,ball.n.04,ball.n.01,0.0,,False,ball.n.04,True
+The fisherman caught a large bass in the lake.,bass,bass.n.01,bass.n.01,0.0,,True,bass.n.02,False
+The musician played a deep bass note.,bass,bass.n.02,bass.n.01,0.0,,False,sea_bass.n.01,False
+The band uses a bass guitar during performances.,bass,bass.n.02,bass.n.01,0.0,,False,sea_bass.n.01,False
+The fish was a large black bass.,bass,bass.n.01,sea_bass.n.01,1.0,fish,False,sea_bass.n.01,False
+The students sat in the classroom.,class,class.n.01,class.n.01,0.0,,True,class.n.02,False
+The teacher belongs to the first class of experts.,class,class.n.03,class.n.01,0.0,,False,class.n.01,False
+The students attended a programming class.,class,class.n.01,class.n.02,1.0,student,False,class.n.02,False
+The museum displayed a rare class of artifacts.,class,class.n.03,class.n.01,0.0,,False,class.n.01,False
+The manager will address the issue tomorrow.,address,address.v.01,address.v.01,0.0,,True,address.n.01,False
+Please write your address on the application form.,address,address.n.01,address.n.05,1.0,form,False,address.n.05,False

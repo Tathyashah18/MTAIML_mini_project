@@ -1,0 +1,101 @@
+id,sentence,target_word,gold_synset
+1,"He went to the bank to deposit his money.",bank,bank.n.01
+2,"The fisherman sat quietly on the bank of the river.",bank,bank.n.01
+3,"They walked along the bank of the river.",bank,bank.n.01
+4,"She opened a savings account at the bank.",bank,bank.n.01
+5,"The bank approved his loan application.",bank,bank.n.01
+6,"The bat flew out of the dark cave at night.",bat,bat.n.02
+7,"We saw a bat hanging from the ceiling.",bat,bat.n.02
+8,"A small bat flew across the room.",bat,bat.n.02
+9,"The player picked up the bat and walked toward the field.",bat,bat.n.01
+10,"He swung the bat and hit the ball.",bat,bat.n.01
+11,"She turned on the light because the room was dark.",light,light.n.01
+12,"The light from the lamp filled the room.",light,light.n.01
+13,"The bright light came through the window.",light,light.n.01
+14,"This suitcase is very light, so I can carry it easily.",light,light.a.01
+15,"The box is light enough for a child to lift.",light,light.a.01
+16,"He used a match to start the fire.",match,match.n.02
+17,"She struck a match to light the candle.",match,match.n.02
+18,"The football match started at seven in the evening.",match,match.n.01
+19,"Our team won the match yesterday.",match,match.n.01
+20,"The final match attracted thousands of fans.",match,match.n.01
+21,"The workers used a crane to lift the heavy machine.",crane,crane.n.04
+22,"The crane lifted the steel beam high into the air.",crane,crane.n.04
+23,"The construction crane moved the container.",crane,crane.n.04
+24,"We saw a crane standing near the lake.",crane,crane.n.01
+25,"The crane spread its wings and flew away.",crane,crane.n.01
+26,"The dog began to bark loudly at the stranger.",bark,bark.v.01
+27,"The dog continued to bark throughout the night.",bark,bark.v.01
+28,"The puppy started to bark when the door opened.",bark,bark.v.01
+29,"The tree has rough bark on its trunk.",bark,bark.n.01
+30,"The bark of the old tree was very thick.",bark,bark.n.01
+31,"The factory is a large chemical plant.",plant,plant.n.01
+32,"The workers arrived at the manufacturing plant early.",plant,plant.n.01
+33,"The new plant produces electronic components.",plant,plant.n.01
+34,"The plant needs water and sunlight to grow.",plant,plant.n.02
+35,"The green plant grew beside the window.",plant,plant.n.02
+36,"She planted a small plant in the garden.",plant,plant.n.02
+37,"He picked up a rock from the ground.",rock,rock.n.01
+38,"The children threw a rock into the river.",rock,rock.n.01
+39,"A large rock blocked the road.",rock,rock.n.01
+40,"The band played rock music at the concert.",rock,rock.n.02
+41,"She likes listening to rock music.",rock,rock.n.02
+42,"The radio station played classic rock all evening.",rock,rock.n.02
+43,"The spring in the machine needs to be replaced.",spring,spring.n.03
+44,"The metal spring returned to its original shape.",spring,spring.n.03
+45,"The mechanic replaced the broken spring.",spring,spring.n.03
+46,"Spring brings warm weather and flowers.",spring,spring.n.01
+47,"The flowers bloom during spring.",spring,spring.n.01
+48,"Many birds return during spring.",spring,spring.n.01
+49,"He looked at his watch before leaving the house.",watch,watch.n.01
+50,"My watch stopped working this morning.",watch,watch.n.01
+51,"The old watch was given to him by his grandfather.",watch,watch.n.01
+52,"They will watch the movie tonight.",watch,watch.v.01
+53,"She likes to watch birds from her window.",watch,watch.v.01
+54,"Please watch the children while I cook dinner.",watch,watch.v.01
+55,"The farmer stood in the field with a large hoe.",hoe,hoe.n.01
+56,"She used a hoe to remove weeds from the garden.",hoe,hoe.n.01
+57,"He will hoe the garden before planting seeds.",hoe,hoe.v.01
+58,"The gardener used the tool to hoe the soil.",hoe,hoe.v.01
+59,"The player stood near the goal during the game.",goal,goal.n.01
+60,"Her goal is to become an engineer.",goal,goal.n.05
+61,"The team scored a goal in the final minute.",goal,goal.n.01
+62,"He worked hard to achieve his career goal.",goal,goal.n.05
+63,"The newspaper was delivered early in the morning.",paper,paper.n.01
+64,"She wrote her answer on a sheet of paper.",paper,paper.n.01
+65,"The professor published a paper on artificial intelligence.",paper,paper.n.02
+66,"The students read a research paper for the assignment.",paper,paper.n.02
+67,"The teacher asked the students to write a note.",note,note.n.01
+68,"Please note the important information on this page.",note,note.v.01
+69,"She played a high note on the piano.",note,note.n.03
+70,"He wrote a short note to his friend.",note,note.n.01
+71,"The doctor examined the patient's arm.",arm,arm.n.01
+72,"The robot has a mechanical arm.",arm,arm.n.01
+73,"The company has an arm that handles international sales.",arm,arm.n.02
+74,"The organization created an overseas arm for its operations.",arm,arm.n.02
+75,"The students gathered around the table.",table,table.n.01
+76,"The data is presented in the following table.",table,table.n.02
+77,"They placed the books on the wooden table.",table,table.n.01
+78,"The researcher created a table of experimental results.",table,table.n.02
+79,"The children played on the field after school.",field,field.n.01
+80,"The scientist works in the field of robotics.",field,field.n.05
+81,"The farmer walked across the field.",field,field.n.01
+82,"She is an expert in the field of electronics.",field,field.n.05
+83,"The athlete ran around the track twice.",track,track.n.01
+84,"The detective tried to track the suspect.",track,track.v.01
+85,"The train runs on a narrow track.",track,track.n.01
+86,"The software can track network traffic.",track,track.v.01
+87,"The children played with a ball in the park.",ball,ball.n.01
+88,"The politician attended the charity ball.",ball,ball.n.04
+89,"He threw the ball toward his friend.",ball,ball.n.01
+90,"They dressed formally for the evening ball.",ball,ball.n.04
+91,"The fisherman caught a large bass in the lake.",bass,bass.n.01
+92,"The musician played a deep bass note.",bass,bass.n.02
+93,"The band uses a bass guitar during performances.",bass,bass.n.02
+94,"The fish was a large black bass.",bass,bass.n.01
+95,"The students sat in the classroom.",class,class.n.01
+96,"The teacher belongs to the first class of experts.",class,class.n.03
+97,"The students attended a programming class.",class,class.n.01
+98,"The museum displayed a rare class of artifacts.",class,class.n.03
+99,"The manager will address the issue tomorrow.",address,address.v.01
+100,"Please write your address on the application form.",address,address.n.01
