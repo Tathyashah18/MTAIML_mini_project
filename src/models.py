@@ -1,5 +1,6 @@
 from collections import Counter
-
+nltk.download("wordnet", quiet=True)
+nltk.download("omw-1.4", quiet=True)
 from nltk.corpus import wordnet as wn
 from nltk.wsd import lesk as nltk_lesk
 

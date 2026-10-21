@@ -1,7 +1,8 @@
 import os
 import csv
 import sys
-
+nltk.download("wordnet", quiet=True)
+nltk.download("omw-1.4", quiet=True)
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 
