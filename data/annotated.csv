@@ -98,4 +98,4 @@ id,sentence,target_word,gold_synset
 97,"The students attended a programming class.",class,class.n.01
 98,"The museum displayed a rare class of artifacts.",class,class.n.03
 99,"The manager will address the issue tomorrow.",address,address.v.01
-100,"Please write your address on the application form.",address,address.n.01
+100,"Please write your address on the application form.",address,address.n.01 

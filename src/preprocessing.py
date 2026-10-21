@@ -7,9 +7,6 @@ from nltk.stem import WordNetLemmatizer
 
 
 def download_nltk_resources():
-    """
-    Download all required NLTK resources.
-    """
     resources = [
         ("tokenizers/punkt", "punkt"),
         ("tokenizers/punkt_tab", "punkt_tab"),
@@ -30,39 +27,23 @@ def download_nltk_resources():
             nltk.download(resource_name)
 
 
-# Initialize resources
 download_nltk_resources()
 
 lemmatizer = WordNetLemmatizer()
 
 
 def clean_text(text):
-    """
-    Basic text cleaning.
-
-    - Converts text to lowercase
-    - Removes unwanted punctuation
-    - Keeps apostrophes inside words
-    - Removes extra spaces
-    """
     if not isinstance(text, str):
         return ""
 
     text = text.lower()
-
-    # Replace punctuation with spaces.
     text = re.sub(r"[^a-z0-9\s']", " ", text)
-
-    # Remove extra whitespace.
     text = re.sub(r"\s+", " ", text).strip()
 
     return text
 
 
 def segment_sentences(text):
-    """
-    Split text into sentences.
-    """
     if not isinstance(text, str):
         return []
 
@@ -70,9 +51,6 @@ def segment_sentences(text):
 
 
 def tokenize_text(text):
-    """
-    Tokenize text into individual words.
-    """
     if not isinstance(text, str):
         return []
 
@@ -80,9 +58,6 @@ def tokenize_text(text):
 
 
 def remove_stopwords(tokens):
-    """
-    Remove common English stopwords.
-    """
     stop_words = set(stopwords.words("english"))
 
     return [
@@ -93,13 +68,6 @@ def remove_stopwords(tokens):
 
 
 def lemmatize_tokens(tokens):
-    """
-    Lemmatize tokens using the default noun-based
-    WordNet lemmatizer.
-
-    POS-aware lemmatization is handled separately when
-    POS information is available.
-    """
     return [
         lemmatizer.lemmatize(token.lower())
         for token in tokens
@@ -107,21 +75,6 @@ def lemmatize_tokens(tokens):
 
 
 def get_wordnet_pos(treebank_tag):
-    """
-    Convert NLTK POS tags into WordNet POS tags.
-
-    NLTK:
-        J -> adjective
-        V -> verb
-        N -> noun
-        R -> adverb
-
-    WordNet:
-        a -> adjective
-        v -> verb
-        n -> noun
-        r -> adverb
-    """
     if not treebank_tag:
         return None
 
@@ -141,9 +94,6 @@ def get_wordnet_pos(treebank_tag):
 
 
 def pos_tag_tokens(tokens):
-    """
-    Apply NLTK POS tagging to a token list.
-    """
     if not tokens:
         return []
 
@@ -151,9 +101,6 @@ def pos_tag_tokens(tokens):
 
 
 def lemmatize_token_with_pos(token, pos=None):
-    """
-    Lemmatize a single token using an optional WordNet POS.
-    """
     token = token.lower()
 
     if pos in {"n", "v", "a", "r"}:
@@ -163,15 +110,6 @@ def lemmatize_token_with_pos(token, pos=None):
 
 
 def lemmatize_tokens_with_pos(tagged_tokens):
-    """
-    POS-aware lemmatization.
-
-    Input:
-        [("dogs", "NNS"), ("running", "VBG")]
-
-    Output:
-        ["dog", "run"]
-    """
     result = []
 
     for token, tag in tagged_tokens:
@@ -189,17 +127,7 @@ def preprocess_text(
     remove_stop_words=True,
     apply_lemmatization=True
 ):
-    """
-    Complete preprocessing pipeline.
-
-    Steps:
-        1. Clean text
-        2. Tokenize
-        3. Remove stopwords
-        4. Lemmatize
-    """
     text = clean_text(text)
-
     tokens = tokenize_text(text)
 
     if remove_stop_words:
@@ -212,13 +140,6 @@ def preprocess_text(
 
 
 def find_target_index(tokens, target_word):
-    """
-    Find the first occurrence of target_word.
-
-    Returns:
-        Index of target word
-        -1 if target is not found
-    """
     if not tokens or not target_word:
         return -1
 
@@ -236,20 +157,6 @@ def get_context_window(
     target_word,
     window_size=7
 ):
-    """
-    Extract a context window around the target word.
-
-    The target word itself is excluded from the context.
-
-    Example:
-        window_size = 7
-
-        [3 words before]
-        + target
-        + [4 words after]
-
-    depending on sentence boundaries.
-    """
     if not tokens or not target_word:
         return []
 
@@ -276,27 +183,17 @@ def prepare_context(
     remove_stop_words=True,
     apply_lemmatization=True
 ):
-    """
-    Prepare the context around a target word.
-
-    Important:
-    The target position is located BEFORE stopword removal
-    and preprocessing so that its index is not shifted.
-    """
     if not sentence or not target_word:
         return []
 
-    # Clean and tokenize first.
     cleaned_sentence = clean_text(sentence)
     tokens = tokenize_text(cleaned_sentence)
 
-    # Locate target before modifying token list.
     target_index = find_target_index(tokens, target_word)
 
     if target_index == -1:
         return []
 
-    # Extract context before removing stopwords.
     start = max(0, target_index - window_size)
     end = min(len(tokens), target_index + window_size + 1)
 
@@ -320,16 +217,6 @@ def prepare_context_with_pos(
     window_size=7,
     remove_stop_words=True
 ):
-    """
-    Prepare context together with POS information.
-
-    Returns:
-        {
-            "tokens": [...],
-            "tagged_tokens": [...],
-            "target_pos": "n"/"v"/"a"/"r"/None
-        }
-    """
     if not sentence or not target_word:
         return {
             "tokens": [],
@@ -349,7 +236,6 @@ def prepare_context_with_pos(
             "target_pos": None
         }
 
-    # POS tag complete sentence first.
     tagged_sentence = pos_tag_tokens(tokens)
 
     target_tag = tagged_sentence[target_index][1]
@@ -384,12 +270,6 @@ def prepare_context_with_pos(
 
 
 def normalize_tokens(tokens):
-    """
-    Normalize an arbitrary token list.
-
-    Useful for WordNet definitions, examples,
-    synonyms, and context.
-    """
     if not tokens:
         return []
 
@@ -401,7 +281,6 @@ def normalize_tokens(tokens):
 
         token = token.lower().strip()
 
-        # Keep alphabetic words and simple alphanumeric words.
         if not re.match(r"^[a-z0-9]+$", token):
             continue
 
@@ -411,9 +290,6 @@ def normalize_tokens(tokens):
 
 
 def preprocess_signature(signature):
-    """
-    Preprocess a WordNet definition or example sentence.
-    """
     if not isinstance(signature, str):
         return []
 
@@ -430,9 +306,6 @@ def preprocess_signature_with_pos(
     signature,
     pos=None
 ):
-    """
-    POS-aware preprocessing for a WordNet signature.
-    """
     if not isinstance(signature, str):
         return []
 
