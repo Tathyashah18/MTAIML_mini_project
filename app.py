@@ -268,7 +268,6 @@ th {
     <h2>Analyze a sentence</h2>
     <p class="small">
         Enter a sentence and a target word to compare both models.
-        The custom model uses a fixed context window of 5.
     </p>
 
     <form id="form">
@@ -294,9 +293,7 @@ th {
     <p class="small">
         Dataset path: data/annotated.csv
     </p>
-    <p class="small">
-        Custom Simplified Lesk context window: 5 (fixed)
-    </p>
+    
 
     <button id="evaluateButton" type="button">
         Run dataset comparison
