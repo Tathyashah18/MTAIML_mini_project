@@ -58,9 +58,9 @@ id,sentence,target_word,gold_synset
 57,"He will hoe the garden before planting seeds.",hoe,hoe.v.01
 58,"The gardener used the tool to hoe the soil.",hoe,hoe.v.01
 59,"The goalkeeper dived to stop the ball from entering the goal.",goal,goal.n.01
-60,"Her ambition is to become a successful architect.",goal,goal.n.05
+60,"Her ambition is to become a successful architect.",goal,goal.n.01
 61,"The striker kicked the ball into the net to score a goal.",goal,goal.n.01
-62,"He set a personal goal of learning three new languages.",goal,goal.n.05
+62,"He set a personal goal of learning three new languages.",goal,goal.n.01
 63,"The newspaper was delivered early in the morning.",paper,paper.n.01
 64,"She wrote her answer on a sheet of paper.",paper,paper.n.01
 65,"The professor published a paper on artificial intelligence.",paper,paper.n.02
