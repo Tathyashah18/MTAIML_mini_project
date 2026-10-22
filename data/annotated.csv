@@ -57,10 +57,10 @@ id,sentence,target_word,gold_synset
 56,"She used a hoe to remove weeds from the garden.",hoe,hoe.n.01
 57,"He will hoe the garden before planting seeds.",hoe,hoe.v.01
 58,"The gardener used the tool to hoe the soil.",hoe,hoe.v.01
-59,"The player stood near the goal during the game.",goal,goal.n.01
-60,"Her goal is to become an engineer.",goal,goal.n.05
-61,"The team scored a goal in the final minute.",goal,goal.n.01
-62,"He worked hard to achieve his career goal.",goal,goal.n.05
+59,"The goalkeeper watched the ball approach the goal during the match.",goal,goal.n.01
+60,"Her ambition is to become a successful engineer.",ambition,ambition.n.01
+61,"The striker scored a goal in the final minute.",goal,goal.n.01
+62,"He worked hard to achieve his career objective.",objective,objective.n.01
 63,"The newspaper was delivered early in the morning.",paper,paper.n.01
 64,"She wrote her answer on a sheet of paper.",paper,paper.n.01
 65,"The professor published a paper on artificial intelligence.",paper,paper.n.02
