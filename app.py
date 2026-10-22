@@ -815,7 +815,7 @@ def predict():
         ), 400
 
     if not re.search(
-        r"\\b" + re.escape(target) + r"\\b",
+        r"\b" + re.escape(target) + r"\b",
         sentence,
         flags=re.IGNORECASE,
     ):
