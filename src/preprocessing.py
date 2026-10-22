@@ -1,9 +1,14 @@
-
 import os
 import re
 import nltk
 
+# Project root: one level above the src directory
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+NLTK_DATA_DIR = os.path.join(PROJECT_ROOT, "nltk_data")
 
+# Use NLTK data bundled with the deployed project.
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.insert(0, NLTK_DATA_DIR)
 # ---------------------------------------------------------
 # NLTK DATA CONFIGURATION
 # ---------------------------------------------------------
