@@ -3,7 +3,6 @@ import os
 import sys
 import re
 import csv
-import traceback
 
 from flask import Flask, jsonify, render_template_string, request
 
@@ -68,7 +67,7 @@ nav {
 
 nav button {
     margin: 0;
-    background: #ffffff;
+    background: white;
     color: #182b50;
 }
 
@@ -100,8 +99,6 @@ textarea, input {
     border-radius: 8px;
     font: inherit;
 }
-
-input[type=range] { padding: 0; }
 
 button {
     margin-top: 18px;
@@ -195,10 +192,6 @@ th {
     font-weight: bold;
 }
 
-.status-missing {
-    color: #637087;
-}
-
 .notice {
     padding: 13px;
     border-radius: 8px;
@@ -253,7 +246,6 @@ th {
 
 <body>
 <main>
-
 <header>
     <h1>Lesk WSD Explorer</h1>
     <p>Word Sense Disambiguation using WordNet</p>
@@ -272,15 +264,11 @@ th {
     </nav>
 </header>
 
-<!-- =====================================================
-     SENTENCE ANALYZER
-====================================================== -->
-
 <section class="panel" id="analyzePanel">
     <h2>Analyze a sentence</h2>
     <p class="small">
-        Enter a sentence and an ambiguous target word to compare
-        both models on that sentence.
+        Enter a sentence and a target word to compare both models.
+        The custom model uses a fixed context window of 5.
     </p>
 
     <form id="form">
@@ -290,25 +278,11 @@ th {
         <label for="target">Target word</label>
         <input id="target" value="bank" required>
 
-        <label for="window">
-            Context window: <span id="size">7</span>
-        </label>
-        <input id="window" type="range" min="1" max="15" value="7">
-
-        <p class="small">
-            Number of words considered on each side of the target word,
-            where supported by your custom model.
-        </p>
-
         <button id="run" type="submit">Run disambiguation</button>
     </form>
 
     <div id="output" aria-live="polite"></div>
 </section>
-
-<!-- =====================================================
-     DATASET EVALUATION
-====================================================== -->
 
 <section class="panel hidden" id="evaluatePanel">
     <h2>Dataset Evaluation</h2>
@@ -320,11 +294,8 @@ th {
     <p class="small">
         Dataset path: data/annotated.csv
     </p>
-
-    <label for="evalWindow">Evaluation context window</label>
-    <input id="evalWindow" type="range" min="1" max="15" value="5">
     <p class="small">
-        Context window: <strong id="evalWindowSize">5</strong>
+        Custom Simplified Lesk context window: 5 (fixed)
     </p>
 
     <button id="evaluateButton" type="button">
@@ -334,7 +305,6 @@ th {
     <div id="evaluationStatus" aria-live="polite"></div>
     <div id="evaluationResults"></div>
 </section>
-
 </main>
 
 <script>
@@ -355,16 +325,6 @@ function showTab(tab) {
         "active", !analyze
     );
 }
-
-const slider = document.getElementById("window");
-
-slider.addEventListener("input", () => {
-    document.getElementById("size").textContent = slider.value;
-});
-
-document.getElementById("evalWindow").addEventListener("input", e => {
-    document.getElementById("evalWindowSize").textContent = e.target.value;
-});
 
 function addText(parent, tag, text, className = "") {
     const el = document.createElement(tag);
@@ -400,6 +360,7 @@ async function postJSON(url, body) {
     return data;
 }
 
+
 // =====================================================
 // SINGLE SENTENCE PREDICTION
 // =====================================================
@@ -417,8 +378,7 @@ document.getElementById("form").addEventListener("submit", async e => {
     try {
         const data = await postJSON("/api/predict", {
             sentence: document.getElementById("sentence").value,
-            target_word: document.getElementById("target").value,
-            window_size: Number(slider.value)
+            target_word: document.getElementById("target").value
         });
 
         output.replaceChildren();
@@ -448,14 +408,14 @@ document.getElementById("form").addEventListener("submit", async e => {
                 addText(card, "p", "Score: " + result.score);
             }
 
-            if (result.context) {
+            if (result.context && result.context.length) {
                 addText(
                     card, "p",
                     "Context: " + result.context.join(", ")
                 );
             }
 
-            if (result.overlap_words) {
+            if (result.overlap_words && result.overlap_words.length) {
                 addText(
                     card, "p",
                     "Overlap words: " + result.overlap_words.join(", ")
@@ -488,6 +448,7 @@ document.getElementById("form").addEventListener("submit", async e => {
     }
 });
 
+
 // =====================================================
 // DATASET EVALUATION
 // =====================================================
@@ -504,11 +465,7 @@ document.getElementById("evaluateButton").addEventListener(
         addText(status, "p", "Evaluating dataset. Please wait...");
 
         try {
-            const data = await postJSON("/api/evaluate", {
-                window_size: Number(
-                    document.getElementById("evalWindow").value
-                )
-            });
+            const data = await postJSON("/api/evaluate", {});
 
             status.replaceChildren();
 
@@ -588,7 +545,6 @@ document.getElementById("evaluateButton").addEventListener(
             );
 
             resultsContainer.appendChild(summary);
-
             addText(resultsContainer, "h3", "Detailed test results");
 
             const search = document.createElement("input");
@@ -651,7 +607,8 @@ document.getElementById("evaluateButton").addEventListener(
 
                     for (let i = 0; i < values.length; i++) {
                         const td = document.createElement("td");
-                        td.textContent = values[i] == null ? "" : String(values[i]);
+                        td.textContent = values[i] == null
+                            ? "" : String(values[i]);
 
                         if (i === 6 || i === 8) {
                             td.className = values[i] === "CORRECT"
@@ -680,7 +637,10 @@ document.getElementById("evaluateButton").addEventListener(
 
             if (data.errors && data.errors.length) {
                 const errors = document.createElement("details");
-                addText(errors, "summary", "View failed rows (" + data.errors.length + ")");
+                addText(
+                    errors, "summary",
+                    "View failed rows (" + data.errors.length + ")"
+                );
 
                 const list = document.createElement("ul");
 
@@ -697,7 +657,11 @@ document.getElementById("evaluateButton").addEventListener(
 
         } catch (error) {
             status.replaceChildren();
-            addText(status, "p", "Evaluation failed: " + error.message, "notice error");
+            addText(
+                status, "p",
+                "Evaluation failed: " + error.message,
+                "notice error"
+            );
         } finally {
             button.disabled = false;
         }
@@ -715,9 +679,7 @@ document.getElementById("evaluateButton").addEventListener(
 
 def load_annotated_data(file_path):
     if not os.path.exists(file_path):
-        raise FileNotFoundError(
-            "Dataset not found: " + file_path
-        )
+        raise FileNotFoundError("Dataset not found: " + file_path)
 
     data = []
 
@@ -761,6 +723,8 @@ def get_synset_name(synset):
 
 
 def evaluate_sentence(sentence, target_word, gold_synset_name, window_size):
+    gold_synset_name = str(gold_synset_name).strip()
+
     try:
         gold_synset = wn.synset(gold_synset_name)
     except Exception as error:
@@ -780,8 +744,7 @@ def evaluate_sentence(sentence, target_word, gold_synset_name, window_size):
     nltk_synset = nltk_result.get("predicted_synset")
 
     custom_name = get_synset_name(
-        custom_result.get("predicted_name")
-        or custom_synset
+        custom_result.get("predicted_name") or custom_synset
     )
     nltk_name = get_synset_name(nltk_synset)
     gold_name = gold_synset.name()
@@ -846,23 +809,13 @@ def predict():
     sentence = str(data.get("sentence", "")).strip()
     target = str(data.get("target_word", "")).strip().lower()
 
-    try:
-        window_size = int(data.get("window_size", 7))
-    except (TypeError, ValueError):
-        return jsonify(error="Window size must be an integer."), 400
-
     if not sentence or not target:
         return jsonify(
             error="Enter a sentence and target word."
         ), 400
 
-    if not 1 <= window_size <= 15:
-        return jsonify(
-            error="Window size must be between 1 and 15."
-        ), 400
-
     if not re.search(
-        r"\b" + re.escape(target) + r"\b",
+        r"\\b" + re.escape(target) + r"\\b",
         sentence,
         flags=re.IGNORECASE,
     ):
@@ -872,7 +825,7 @@ def predict():
 
     try:
         custom = SimplifiedLesk(
-            window_size=window_size
+            window_size=DEFAULT_WINDOW_SIZE
         ).disambiguate(sentence, target)
 
         nltk_result = NLTKLeskModel().disambiguate(
@@ -930,19 +883,8 @@ def predict():
 
 @app.post("/api/evaluate")
 def evaluate():
-    data = request.get_json(silent=True) or {}
-
-    try:
-        window_size = int(data.get("window_size", DEFAULT_WINDOW_SIZE))
-    except (TypeError, ValueError):
-        return jsonify(
-            error="Window size must be an integer."
-        ), 400
-
-    if not 1 <= window_size <= 15:
-        return jsonify(
-            error="Window size must be between 1 and 15."
-        ), 400
+    # Fixed context window: no slider or request parameter.
+    window_size = DEFAULT_WINDOW_SIZE
 
     try:
         dataset = load_annotated_data(DATA_FILE)
@@ -964,7 +906,6 @@ def evaluate():
                 window_size,
             )
 
-            # Keep JSON serialization safe.
             score = result.get("custom_score")
             try:
                 result["custom_score"] = (
