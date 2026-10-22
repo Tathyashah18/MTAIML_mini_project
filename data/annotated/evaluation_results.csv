@@ -57,8 +57,10 @@ The farmer stood in the field with a large hoe.,hoe,hoe.n.01,hoe.n.01,0.0,,True,
 She used a hoe to remove weeds from the garden.,hoe,hoe.n.01,hoe.n.01,0.0,,True,hoe.n.01,True
 He will hoe the garden before planting seeds.,hoe,hoe.v.01,hoe.v.01,0.0,,True,hoe.v.01,True
 The gardener used the tool to hoe the soil.,hoe,hoe.v.01,hoe.v.01,0.0,,True,hoe.n.01,False
-The player stood near the goal during the game.,goal,goal.n.01,goal.n.03,2.0,"game, player",False,goal.n.03,False
-The team scored a goal in the final minute.,goal,goal.n.01,goal.n.04,2.0,minute,False,goal.n.03,False
+The goalkeeper watched the ball approach the goal during the match.,goal,goal.n.01,goal.n.03,1.0,ball,False,goal.n.03,False
+Her ambition is to become a successful engineer.,ambition,ambition.n.01,ambition.n.01,0.0,,True,ambition.n.01,True
+The striker scored a goal in the final minute.,goal,goal.n.01,goal.n.04,2.0,minute,False,goal.n.03,False
+He worked hard to achieve his career objective.,objective,aim.n.02,aim.n.02,0.0,,True,aim.n.02,True
 The newspaper was delivered early in the morning.,paper,paper.n.01,paper.n.01,0.0,,True,newspaper.n.03,False
 She wrote her answer on a sheet of paper.,paper,paper.n.01,newspaper.n.01,1.0,sheet,False,paper.n.01,True
 The professor published a paper on artificial intelligence.,paper,composition.n.08,paper.n.01,0.0,,False,newspaper.n.01,False
