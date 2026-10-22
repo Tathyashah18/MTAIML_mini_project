@@ -1,33 +1,38 @@
+
 import os
 import re
+from pathlib import Path
+
 import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize, word_tokenize
 
-# Project root: one level above the src directory
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-NLTK_DATA_DIR = os.path.join(PROJECT_ROOT, "nltk_data")
 
-# Use NLTK data bundled with the deployed project.
-if NLTK_DATA_DIR not in nltk.data.path:
-    nltk.data.path.insert(0, NLTK_DATA_DIR)
 # ---------------------------------------------------------
 # NLTK DATA CONFIGURATION
 # ---------------------------------------------------------
 
-# Vercel serverless functions have a writable /tmp directory.
-# Locally, this directory also works.
-NLTK_DATA_DIR = os.path.join(
-    os.environ.get("TMPDIR", "/tmp"),
-    "nltk_data"
-)
+# Project root is the directory containing app.py.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+# Prefer the project's bundled NLTK data.
+# Also support src/nltk_data for compatibility with a previous setup.
+NLTK_DATA_DIRS = [
+    PROJECT_ROOT / "nltk_data",
+    Path(__file__).resolve().parent / "nltk_data",
+]
 
-# Tell NLTK where to find downloaded resources.
-if NLTK_DATA_DIR not in nltk.data.path:
-    nltk.data.path.insert(0, NLTK_DATA_DIR)
+# Add bundled data directories to NLTK's search path.
+# Do not use /tmp or download resources during module import.
+for data_dir in NLTK_DATA_DIRS:
+    if data_dir.is_dir():
+        nltk_data_path = str(data_dir)
+        if nltk_data_path not in nltk.data.path:
+            nltk.data.path.insert(0, nltk_data_path)
 
 
-# Resource paths used by nltk.data.find() and their package names.
+# NLTK resource paths and the corresponding downloader package names.
 NLTK_RESOURCES = [
     ("tokenizers/punkt", "punkt"),
     ("tokenizers/punkt_tab", "punkt_tab"),
@@ -45,72 +50,55 @@ NLTK_RESOURCES = [
 ]
 
 
-def download_nltk_resources():
+def check_nltk_resource(resource_path, resource_name):
     """
-    Ensure the required NLTK resources exist.
+    Verify that an NLTK resource is available.
 
-    Downloads missing resources to NLTK_DATA_DIR and verifies
-    that NLTK can find them. Raises a descriptive error if a
-    resource cannot be installed or located.
+    This function does not download anything. Resources must
+    already be installed locally or bundled with the deployment.
     """
-    for resource_path, resource_name in NLTK_RESOURCES:
-        try:
-            nltk.data.find(resource_path)
-            continue
+    try:
+        nltk.data.find(resource_path)
+        return True
 
-        except LookupError:
-            pass
-
-        print(
-            f"NLTK resource '{resource_name}' is missing. "
-            f"Downloading to {NLTK_DATA_DIR}..."
+    except LookupError as error:
+        searched_paths = "\n".join(
+            f"  - {path}" for path in nltk.data.path
         )
 
-        try:
-            success = nltk.download(
-                resource_name,
-                download_dir=NLTK_DATA_DIR,
-                quiet=True,
-            )
-
-            if not success:
-                raise RuntimeError(
-                    "nltk.download() returned False"
-                )
-
-        except Exception as error:
-            raise RuntimeError(
-                f"Failed to download NLTK resource "
-                f"'{resource_name}'. Check network access "
-                f"and deployment logs. Details: {error}"
-            ) from error
-
-        # Verify the resource after downloading.
-        try:
-            nltk.data.find(resource_path)
-
-        except LookupError as error:
-            raise LookupError(
-                f"NLTK resource '{resource_name}' was "
-                f"downloaded but cannot be found. "
-                f"Expected path: '{resource_path}'. "
-                f"NLTK search paths: {nltk.data.path}"
-            ) from error
-
-        print(f"NLTK resource '{resource_name}' is ready.")
+        raise LookupError(
+            f"Required NLTK resource '{resource_name}' is missing.\n"
+            f"Expected resource: {resource_path}\n"
+            f"NLTK searched these directories:\n{searched_paths}\n\n"
+            "Install the resource locally and include it in your "
+            "GitHub repository's nltk_data directory. "
+            "Do not rely on downloading it during Vercel startup."
+        ) from error
 
 
-# Initialize required resources before using preprocessing.
-download_nltk_resources()
+def download_nltk_resources():
+    """
+    Backward-compatible function name.
+
+    Previously this function downloaded resources at import time.
+    It now only verifies that resources are present.
+
+    Call it explicitly if you want to validate your installation.
+    """
+    for resource_path, resource_name in NLTK_RESOURCES:
+        check_nltk_resource(resource_path, resource_name)
+
+    print("All required NLTK resources are available.")
+
+
+# IMPORTANT:
+# Do not call download_nltk_resources() at module import time.
+# Vercel should use the NLTK resources bundled with the project.
 
 
 # ---------------------------------------------------------
 # LEMMATIZER
 # ---------------------------------------------------------
-
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 
@@ -134,12 +122,24 @@ def segment_sentences(text):
     if not isinstance(text, str):
         return []
 
+    if not text.strip():
+        return []
+
+    check_nltk_resource("tokenizers/punkt", "punkt")
+    check_nltk_resource("tokenizers/punkt_tab", "punkt_tab")
+
     return sent_tokenize(text)
 
 
 def tokenize_text(text):
     if not isinstance(text, str):
         return []
+
+    if not text.strip():
+        return []
+
+    check_nltk_resource("tokenizers/punkt", "punkt")
+    check_nltk_resource("tokenizers/punkt_tab", "punkt_tab")
 
     return word_tokenize(text)
 
@@ -149,6 +149,8 @@ def tokenize_text(text):
 # ---------------------------------------------------------
 
 def remove_stopwords(tokens):
+    check_nltk_resource("corpora/stopwords", "stopwords")
+
     stop_words = set(stopwords.words("english"))
 
     return [
@@ -163,6 +165,8 @@ def remove_stopwords(tokens):
 # ---------------------------------------------------------
 
 def lemmatize_tokens(tokens):
+    check_nltk_resource("corpora/wordnet", "wordnet")
+
     return [
         lemmatizer.lemmatize(token.lower())
         for token in tokens
@@ -192,10 +196,25 @@ def pos_tag_tokens(tokens):
     if not tokens:
         return []
 
+    # Newer NLTK versions use the English-specific tagger.
+    try:
+        check_nltk_resource(
+            "taggers/averaged_perceptron_tagger_eng",
+            "averaged_perceptron_tagger_eng",
+        )
+    except LookupError:
+        # Compatibility with older NLTK installations.
+        check_nltk_resource(
+            "taggers/averaged_perceptron_tagger",
+            "averaged_perceptron_tagger",
+        )
+
     return nltk.pos_tag(tokens)
 
 
 def lemmatize_token_with_pos(token, pos=None):
+    check_nltk_resource("corpora/wordnet", "wordnet")
+
     token = token.lower()
 
     if pos in {"n", "v", "a", "r"}:
