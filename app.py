@@ -1,4 +1,3 @@
-
 import os
 import sys
 import re
@@ -278,7 +277,7 @@ th {
         <input id="target" value="bank" required>
 
         <button id="run" type="submit">Run disambiguation</button>
-    </form>
+            </form>
 
     <div id="output" aria-live="polite"></div>
 </section>
@@ -293,7 +292,6 @@ th {
     <p class="small">
         Dataset path: data/annotated.csv
     </p>
-    
 
     <button id="evaluateButton" type="button">
         Run dataset comparison
@@ -542,6 +540,97 @@ document.getElementById("evaluateButton").addEventListener(
             );
 
             resultsContainer.appendChild(summary);
+
+            // Five-metric comparison (macro-averaged per-synset metrics).
+            const metricTableWrap = document.createElement("div");
+            metricTableWrap.className = "table-wrap";
+            const metricTable = document.createElement("table");
+            metricTable.style.minWidth = "650px";
+            const metricHead = document.createElement("thead");
+            const metricHeadRow = document.createElement("tr");
+            for (const heading of [
+                "Model", "Accuracy", "Macro precision", "Macro recall",
+                "Macro F1-score", "Macro specificity"
+            ]) {
+                addText(metricHeadRow, "th", heading);
+            }
+            metricHead.appendChild(metricHeadRow);
+            metricTable.appendChild(metricHead);
+                        const metricBody = document.createElement("tbody");
+            const metricRows = [
+                ["Custom Simplified Lesk", "custom"],
+                ["NLTK Lesk", "nltk"]
+            ];
+            for (const [modelName, prefix] of metricRows) {
+                const row = document.createElement("tr");
+                addText(row, "td", modelName);
+                const values = [
+                    m[prefix + "_accuracy"],
+                    m[prefix + "_macro_precision"],
+                    m[prefix + "_macro_recall"],
+                    m[prefix + "_macro_f1"],
+                    m[prefix + "_macro_specificity"]
+                ];
+                for (const value of values) {
+                    addText(row, "td", Number(value).toFixed(2) + "%");
+                }
+                metricBody.appendChild(row);
+            }
+            metricTable.appendChild(metricBody);
+            metricTableWrap.appendChild(metricTable);
+            resultsContainer.appendChild(metricTableWrap);
+
+            addText(resultsContainer, "p",
+                "Precision, recall, F1-score, and specificity are macro-averaged " +
+                "across the synset labels (one-vs-rest). Matrix rows are gold/actual " +
+                "labels; columns are predicted labels. A missing prediction is shown " +
+                "as '(no prediction).'", "small");
+
+            function renderConfusionMatrix(title, matrix, labels) {
+                const section = document.createElement("section");
+                section.className = "result";
+                addText(section, "h3", title);
+                const wrap = document.createElement("div");
+                wrap.className = "table-wrap";
+                const table = document.createElement("table");
+                table.style.minWidth = Math.max(900, (labels.length + 1) * 115) + "px";
+
+                const thead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+                addText(headerRow, "th", "Actual \\ Predicted");
+                for (const label of labels) addText(headerRow, "th", label);
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement("tbody");
+                matrix.forEach((counts, rowIndex) => {
+                    const tr = document.createElement("tr");
+                    addText(tr, "th", labels[rowIndex]);
+                    counts.forEach((count, colIndex) => {
+                        const td = document.createElement("td");
+                        td.textContent = String(count);
+                        td.style.textAlign = "center";
+                        if (rowIndex === colIndex) {
+                            td.style.fontWeight = "bold";
+                            td.style.background = "#e7f8ef";
+                        }
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                wrap.appendChild(table);
+                section.appendChild(wrap);
+                resultsContainer.appendChild(section);
+            }
+
+            // Only the NLTK confusion matrix is displayed.
+            // The Custom Simplified Lesk confusion matrix was removed.
+            renderConfusionMatrix(
+                "NLTK Lesk — confusion matrix",
+                m.nltk_confusion_matrix, m.labels
+            );
+
             addText(resultsContainer, "h3", "Detailed test results");
 
             const search = document.createElement("input");
@@ -757,28 +846,98 @@ def evaluate_sentence(sentence, target_word, gold_synset_name, window_size):
         "nltk_prediction": nltk_name,
         "nltk_correct": nltk_name == gold_name,
     }
-
-
 def calculate_metrics(results):
+    """Calculate accuracy, confusion matrices, and macro-averaged metrics."""
     total = len(results)
+    custom_correct = sum(1 for result in results if result["custom_correct"])
+    nltk_correct = sum(1 for result in results if result["nltk_correct"])
 
-    custom_correct = sum(
-        1 for result in results if result["custom_correct"]
-    )
-    nltk_correct = sum(
-        1 for result in results if result["nltk_correct"]
-    )
+    no_prediction = "(no prediction)"
+    gold_labels = [str(r["gold_synset"]) for r in results]
+
+    custom_preds = [
+        str(r["custom_prediction"]) if r["custom_prediction"] else no_prediction
+        for r in results
+    ]
+    nltk_preds = [
+        str(r["nltk_prediction"]) if r["nltk_prediction"] else no_prediction
+        for r in results
+    ]
+
+    labels = sorted(set(gold_labels + custom_preds + nltk_preds))
+    label_index = {label: i for i, label in enumerate(labels)}
+
+    def build_matrix(predictions):
+        matrix = [[0 for _ in labels] for _ in labels]
+        for gold, pred in zip(gold_labels, predictions):
+            matrix[label_index[gold]][label_index[pred]] += 1
+        return matrix
+
+    def summarize_matrix(matrix):
+        per_class = []
+
+        for i, label in enumerate(labels):
+            tp = matrix[i][i]
+            fp = sum(matrix[row][i] for row in range(len(labels))) - tp
+            fn = sum(matrix[i]) - tp
+            tn = total - tp - fp - fn
+
+            precision = tp / (tp + fp) if tp + fp else 0.0
+            recall = tp / (tp + fn) if tp + fn else 0.0
+            f1 = (
+                2 * precision * recall / (precision + recall)
+                if precision + recall else 0.0
+            )
+            specificity = tn / (tn + fp) if tn + fp else 0.0
+
+            per_class.append({
+                "label": label,
+                "tp": tp,
+                "fp": fp,
+                "fn": fn,
+                "tn": tn,
+                "precision": precision * 100,
+                "recall": recall * 100,
+                "f1": f1 * 100,
+                "specificity": specificity * 100,
+            })
+
+        n_labels = len(per_class)
+        macro = {
+            metric: (
+                sum(item[metric] for item in per_class) / n_labels
+                if n_labels else 0.0
+            )
+            for metric in ("precision", "recall", "f1", "specificity")
+        }
+
+        return per_class, macro
+
+    custom_matrix = build_matrix(custom_preds)
+    nltk_matrix = build_matrix(nltk_preds)
+
+    custom_per_class, custom_macro = summarize_matrix(custom_matrix)
+    nltk_per_class, nltk_macro = summarize_matrix(nltk_matrix)
 
     return {
         "total": total,
         "custom_correct": custom_correct,
         "nltk_correct": nltk_correct,
-        "custom_accuracy": (
-            custom_correct / total * 100 if total else 0.0
-        ),
-        "nltk_accuracy": (
-            nltk_correct / total * 100 if total else 0.0
-        ),
+        "custom_accuracy": custom_correct / total * 100 if total else 0.0,
+        "nltk_accuracy": nltk_correct / total * 100 if total else 0.0,
+        "labels": labels,
+        "custom_confusion_matrix": custom_matrix,
+        "nltk_confusion_matrix": nltk_matrix,
+        "custom_class_metrics": custom_per_class,
+        "nltk_class_metrics": nltk_per_class,
+        "custom_macro_precision": custom_macro["precision"],
+        "custom_macro_recall": custom_macro["recall"],
+        "custom_macro_f1": custom_macro["f1"],
+        "custom_macro_specificity": custom_macro["specificity"],
+        "nltk_macro_precision": nltk_macro["precision"],
+        "nltk_macro_recall": nltk_macro["recall"],
+        "nltk_macro_f1": nltk_macro["f1"],
+        "nltk_macro_specificity": nltk_macro["specificity"],
     }
 
 
