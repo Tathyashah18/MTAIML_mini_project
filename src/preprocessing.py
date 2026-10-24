@@ -9,6 +9,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import sent_tokenize, word_tokenize
 
 
+
 # ---------------------------------------------------------
 # NLTK DATA CONFIGURATION
 # ---------------------------------------------------------
@@ -77,14 +78,7 @@ def check_nltk_resource(resource_path, resource_name):
 
 
 def download_nltk_resources():
-    """
-    Backward-compatible function name.
-
-    Previously this function downloaded resources at import time.
-    It now only verifies that resources are present.
-
-    Call it explicitly if you want to validate your installation.
-    """
+    
     for resource_path, resource_name in NLTK_RESOURCES:
         check_nltk_resource(resource_path, resource_name)
 
@@ -103,9 +97,6 @@ def download_nltk_resources():
 lemmatizer = WordNetLemmatizer()
 
 
-# ---------------------------------------------------------
-# TEXT CLEANING
-# ---------------------------------------------------------
 
 def clean_text(text):
     if not isinstance(text, str):

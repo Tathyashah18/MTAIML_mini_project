@@ -3,11 +3,7 @@ from collections import Counter
 from nltk.corpus import wordnet as wn
 from nltk.wsd import lesk as nltk_lesk
 
-from preprocessing import (
-    prepare_context,
-    prepare_context_with_pos,
-    preprocess_signature,
-    preprocess_signature_with_pos,
+from preprocessing import (prepare_context, prepare_context_with_pos, preprocess_signature,preprocess_signature_with_pos,
 )
 
 

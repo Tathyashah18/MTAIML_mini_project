@@ -19,6 +19,7 @@ OUTPUT_FILE = os.path.join(
 DEFAULT_WINDOW_SIZE = 5
 
 
+
 def load_annotated_data(file_path):
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Dataset not found:\n{file_path}")
