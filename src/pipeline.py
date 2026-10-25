@@ -16,7 +16,7 @@ DATA_FILE = os.path.join(PROJECT_ROOT, "data", "annotated.csv")
 OUTPUT_FILE = os.path.join(
     PROJECT_ROOT, "data", "annotated", "evaluation_results.csv"
 )
-DEFAULT_WINDOW_SIZE = 5
+DEFAULT_WINDOW_SIZE = 7
 
 def load_annotated_data(file_path):
     if not os.path.exists(file_path):
